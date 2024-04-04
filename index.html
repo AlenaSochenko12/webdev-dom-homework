@@ -50,11 +50,25 @@
     },
   ];
 
+  const replyComment = () => {
+    const commentTextElements = document.querySelectorAll(".comment-text");
+
+    for (const commentTextElement of commentTextElements) {
+      commentTextElement.addEventListener("click", () => {
+        const text = commentTextElement.textContent.trim();
+        const author = commentTextElement.parentNode.parentNode.querySelector(".header_comment").textContent;
+
+        textInputElement.value = `>${text} \n \n ${author}, `;
+        renderStudents();
+      });
+    };
+  }
+
   const renderStudents = () => {
     const commentsHTML = comments.map((comment, index) => {
       return `<li class="comment">
         <div class="comment-header">
-          <div>${comment.name}</div>
+          <div class="header_comment">${comment.name}</div>
           <div>${comment.date}</div>
         </div>
         <div class="comment-body">
@@ -64,7 +78,7 @@
         </div>
         <div class="comment-footer">
           <div class="likes">
-            <span class="likes-counter">${comment.likes}</span>
+            <span class="likes-counter">${comment.likes}</span> <span class="likes_span">лайка</span>
             <button class="like-button ${comment.isLiked ? '-active-like' : ''}" data-index='${index}'></button>
           </div>
         </div>
@@ -73,6 +87,7 @@
 
     listElement.innerHTML = commentsHTML;
     initEventListeners();
+    replyComment();
   };
 
   const generateDate = () => {
@@ -87,7 +102,7 @@
     return fullDate;
   }
 
-  const initEventListeners = () => {
+  const initEventListeners = (event) => {
     const commentElements = document.querySelectorAll(".like-button");
 
     for (const commentElement of commentElements) {
@@ -103,12 +118,14 @@
           user.likes--;
         }
         console.log(commentElement.likes);
+
         renderStudents();
       });
     };
   }
-
   renderStudents();
+
+
 
   buttonElement.addEventListener("click", () => {
     nameInputElement.classList.remove("error");
@@ -125,9 +142,9 @@
     }
 
     comments.push({
-      name: nameInputElement.value,
+      name: nameInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
       date: generateDate(),
-      comm: textInputElement.value,
+      comm: textInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
       isLiked: false,
       likes: 0,
     });
