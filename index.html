@@ -33,22 +33,33 @@
   const nameInputElement = document.getElementById("name-input");
   const textInputElement = document.getElementById("text-input");
 
-  const comments = [
-    {
-      name: "Глеб Фокин",
-      date: "12.02.22 12:18",
-      comm: "Это будет первый комментарий на этой странице",
-      likes: 3,
-      isLiked: false,
-    },
-    {
-      name: "Варвара Н.",
-      date: "13.02.22 19:22",
-      comm: "Мне нравится как оформлена эта страница! ❤",
-      likes: 75,
-      isLiked: false,
-    },
-  ];
+  let comments = [];
+
+  const getApi = () => {
+    const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/alena-sochenko/comments", {
+      method: "GET"
+    });
+
+    fetchPromise.then((response) => {
+      const jsonPromise = response.json();
+
+      jsonPromise.then((responseData) => {
+        comments = responseData.comments.map((comment) => {
+          return {
+            id: comment.id,
+            name: comment.author.name,
+            date: comment.date,
+            comm: comment.text,
+            likes: comment.likes,
+            isLiked: comment.isLiked,
+          }
+        });
+        renderStudents();
+      });
+    });
+  }
+
+  getApi();
 
   const replyComment = () => {
     const commentTextElements = document.querySelectorAll(".comment-text");
@@ -59,17 +70,25 @@
         const author = commentTextElement.parentNode.parentNode.querySelector(".header_comment").textContent;
 
         textInputElement.value = `>${text} \n \n ${author}, `;
-        renderStudents();
       });
     };
   }
 
   const renderStudents = () => {
     const commentsHTML = comments.map((comment, index) => {
+
+      let myDate = new Date(comment.date);
+      const day = myDate.getDate().toString().padStart(2, '0');
+      const month = (myDate.getMonth() + 1).toString().padStart(2, '0');
+      const year = myDate.getFullYear().toString().slice(-2);
+      let hour = myDate.getHours().toString().padStart(2, '0');
+      let minute = myDate.getMinutes().toString().padStart(2, '0');
+      let fullDate = day + "." + month + "." + year + " " + hour + ":" + minute;
+
       return `<li class="comment">
         <div class="comment-header">
           <div class="header_comment">${comment.name}</div>
-          <div>${comment.date}</div>
+          <div>${fullDate}</div>
         </div>
         <div class="comment-body">
           <div class="comment-text">
@@ -79,7 +98,7 @@
         <div class="comment-footer">
           <div class="likes">
             <span class="likes-counter">${comment.likes}</span> <span class="likes_span">лайка</span>
-            <button class="like-button ${comment.isLiked ? '-active-like' : ''}" data-index='${index}'></button>
+            <button class="like-button ${comment.isLiked ? '-active-like' : ''}" data-id='${index}'></button>
           </div>
         </div>
       </li>`;
@@ -104,20 +123,11 @@
 
   const initEventListeners = (event) => {
     const commentElements = document.querySelectorAll(".like-button");
-
     for (const commentElement of commentElements) {
       commentElement.addEventListener("click", () => {
-        const user = comments[commentElement.dataset.index];
-        if (user.isLiked === false) {
-          user.isLiked = true;
-          commentElement.classList.add("-active-like")
-          user.likes++;
-        }
-        else if (user.isLiked === true) {
-          user.isLiked = false
-          user.likes--;
-        }
-        console.log(commentElement.likes);
+        const user = comments[commentElement.dataset.id];
+        user.isLiked ? user.likes-- : user.likes++;
+        user.isLiked = !user.isLiked;
 
         renderStudents();
       });
@@ -141,14 +151,27 @@
       return;
     }
 
-    comments.push({
-      name: nameInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
-      date: generateDate(),
-      comm: textInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
-      isLiked: false,
-      likes: 0,
+    const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/alena-sochenko/comments", {
+      method: "POST",
+      body: JSON.stringify({
+        text: textInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
+        name: nameInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
+
+      }),
     });
 
+    fetchPromise.then((response) => {
+      const jsonPromise = response.json();
+
+      jsonPromise.then((responseData) => {
+        const newComment = {
+          name: nameInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
+          comm: textInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
+        };
+        comments = comments.push(newComment);
+        getApi();
+      });
+    });
     renderStudents();
 
     nameInputElement.value = "";
