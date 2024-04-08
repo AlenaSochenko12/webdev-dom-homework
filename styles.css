@@ -1,5 +1,10 @@
 body {
     margin: 0;
+    background: #202020;
+  }
+
+  .loader {
+    font-size: 16px;
   }
 
   .container {
