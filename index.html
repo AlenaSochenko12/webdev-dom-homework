@@ -9,6 +9,7 @@
 
 <body>
   <div class="container">
+    <p class="loader" id="loader">Подождите, комментарии загружаются...</p>
     <ul class="comments" id="list">
     </ul>
     <div class="add-form">
@@ -32,18 +33,19 @@
   const listElement = document.getElementById("list");
   const nameInputElement = document.getElementById("name-input");
   const textInputElement = document.getElementById("text-input");
+  const loader = document.getElementById("loader");
 
   let comments = [];
 
+
   const getApi = () => {
-    const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/alena-sochenko/comments", {
+    fetch("https://wedev-api.sky.pro/api/v1/alena-sochenko/comments", {
       method: "GET"
-    });
-
-    fetchPromise.then((response) => {
-      const jsonPromise = response.json();
-
-      jsonPromise.then((responseData) => {
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseData) => {
         comments = responseData.comments.map((comment) => {
           return {
             id: comment.id,
@@ -54,9 +56,9 @@
             isLiked: comment.isLiked,
           }
         });
+        loader.style.visibility = 'hidden';
         renderStudents();
       });
-    });
   }
 
   getApi();
@@ -151,27 +153,32 @@
       return;
     }
 
+    buttonElement.disabled = true;
+    buttonElement.textContent = "Элемент добавлятся...";
+
     const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/alena-sochenko/comments", {
       method: "POST",
       body: JSON.stringify({
         text: textInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
         name: nameInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
-
       }),
-    });
-
-    fetchPromise.then((response) => {
-      const jsonPromise = response.json();
-
-      jsonPromise.then((responseData) => {
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseData) => {
         const newComment = {
           name: nameInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
           comm: textInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
         };
         comments = comments.push(newComment);
         getApi();
+      })
+      .then(() => {
+        buttonElement.disabled = false;
+        buttonElement.textContent = "Написать";
       });
-    });
+
     renderStudents();
 
     nameInputElement.value = "";
