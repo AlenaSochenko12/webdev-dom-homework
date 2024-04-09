@@ -199,11 +199,18 @@
       .catch((error) => {
         buttonElement.disabled = false;
         buttonElement.textContent = "Написать";
-        alert("К сожалению, что-то пошло не так...");
+        if (error.message === "Сервер упал") {
+          alert("Сервер упал");
+        } else if (error.message === "Неверный формат данных") {
+          alert("Неверный формат данных");
+        } else {
+          alert("Кажется, пора проверить интернет-соединение");
+        }
         console.warn(error);
       });
 
     renderStudents();
+
   });
 </script>
 
