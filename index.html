@@ -43,7 +43,11 @@
       method: "GET"
     })
       .then((response) => {
-        return response.json();
+        if (response.status === 500) {
+          throw new Error("Сервер упал");
+        } else {
+          return response.json();
+        }
       })
       .then((responseData) => {
         comments = responseData.comments.map((comment) => {
@@ -58,7 +62,13 @@
         });
         loader.style.visibility = 'hidden';
         renderStudents();
-      });
+      })
+      .catch((error) => {
+        buttonElement.disabled = false;
+        buttonElement.textContent = "Написать";
+        alert("К сожалению, что-то пошло не так...");
+        console.warn(error);
+      });;
   }
 
   getApi();
@@ -164,7 +174,13 @@
       }),
     })
       .then((response) => {
-        return response.json();
+        if (response.status === 500) {
+          throw new Error("Сервер упал");
+        } else if (response.status === 400) {
+          throw new Error("Неверный формат данных");
+        } else {
+          return response.json();
+        }
       })
       .then((responseData) => {
         const newComment = {
@@ -177,12 +193,17 @@
       .then(() => {
         buttonElement.disabled = false;
         buttonElement.textContent = "Написать";
+        nameInputElement.value = "";
+        textInputElement.value = "";
+      })
+      .catch((error) => {
+        buttonElement.disabled = false;
+        buttonElement.textContent = "Написать";
+        alert("К сожалению, что-то пошло не так...");
+        console.warn(error);
       });
 
     renderStudents();
-
-    nameInputElement.value = "";
-    textInputElement.value = "";
   });
 </script>
 
