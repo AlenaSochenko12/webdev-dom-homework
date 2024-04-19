@@ -4,23 +4,12 @@
 <head>
   <title>Проект "Комменты"</title>
   <meta charset="utf-8" />
+  <link rel="shortcut icon" href="https://my.sky.pro/assets/skypro/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-  <div class="container">
-    <p class="loader" id="loader">Подождите, комментарии загружаются...</p>
-    <ul class="comments" id="list">
-    </ul>
-    <div class="add-form">
-      <input type="text" class="add-form-name" placeholder="Введите ваше имя" id="name-input" />
-      <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" id="text-input"
-        rows="4"></textarea>
-      <div class="add-form-row">
-        <button class="add-form-button" id="write-button">Написать</button>
-      </div>
-    </div>
-  </div>
+  <div id="app"></div>
 </body>
 <style>
   .error {
