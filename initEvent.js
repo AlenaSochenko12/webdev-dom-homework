@@ -7,7 +7,7 @@ export const initEventListeners = ({comments, listElement, textInputElement}, ev
         const user = comments[commentElement.dataset.id];
         user.isLiked ? user.likes-- : user.likes++;
         user.isLiked = !user.isLiked;
-
+        
         return renderStudents({comments, listElement, textInputElement});
       });
     };
