@@ -1,9 +1,9 @@
-import { generateDate } from "./date.js";
 import { initEventListeners } from "./initEvent.js";
 import { replyComment } from "./reply.js";
 import { buttonClick } from "./buttonClick.js";
 import { isAuth } from "./main.js";
 import { renderLogin } from "./loginPage.js";
+import { format } from "date-fns";
 
 export const renderStudents = ({comments}) => {
   const appElement = document.getElementById("app");
@@ -11,7 +11,7 @@ export const renderStudents = ({comments}) => {
       return `<li class="comment">
         <div class="comment-header">
           <div class="header_comment">${comment.name}</div>
-          <div>${generateDate({comment})}</div>
+          <div>${format(new Date(comment.date), 'yyyy-MM-dd hh.mm.ss')}</div>
         </div>
         <div class="comment-body">
           <div class="comment-text">

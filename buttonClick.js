@@ -32,11 +32,6 @@ export function buttonClick ({comments}) {
     
     postComment({nameInputElement, textInputElement})
       .then((responseData) => {
-        const newComment = {
-          name: nameInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
-          comm: textInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
-        };
-        comments.push(newComment);
         getApi({comments});
       })
       .then(() => {
@@ -57,7 +52,5 @@ export function buttonClick ({comments}) {
         }
         console.warn(error);
       });
-
-      renderStudents({comments});
   });
 }

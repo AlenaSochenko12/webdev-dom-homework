@@ -1,4 +1,4 @@
-import { getApi } from "./getapi.js";
+ import { getApi } from "./getapi.js";
 
 export let isAuth = false;
 

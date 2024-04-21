@@ -8,7 +8,7 @@ export const renderLogin = ({ comments }) => {
     <div class="container">
         <div class="add-form">
             <input type="text" class="input-login" placeholder="Введите логин" id="login-input" />
-            <input type="text" class="input-password" placeholder="Введите пароль" id="password-input" />
+            <input type="password" class="input-password" placeholder="Введите пароль" id="password-input" />
             <div class="login-row">
                 <button class="write-button" id="login-button">Войти</button>
             </div>
