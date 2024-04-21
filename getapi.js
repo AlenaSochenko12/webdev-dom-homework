@@ -2,9 +2,7 @@ import { getComments } from "./api.js";
 import { renderStudents } from "./render.js";
 
 export const getApi = ({comments}) => {
-  console.log(comments);
   renderStudents({comments});
-  console.log(comments);
   
     getComments().then((responseData) => {
         comments = responseData.comments.map((comment) => {
@@ -18,7 +16,6 @@ export const getApi = ({comments}) => {
           }
         });
         renderStudents({comments});
-        console.log(comments);
         const loader = document.getElementById("loader");
         loader.style.visibility = 'hidden'; //TODO
       })
