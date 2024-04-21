@@ -1,8 +1,8 @@
-import { login, setToken, token } from "./api.js";
-import { renderStudents } from "./render.js";
-import { comments, listElement, textInputElement } from "./variables.js";
+import { login, setToken } from "./api.js";
+import { getApi } from "./getapi.js";
+import { setAuth, setUser } from "./main.js";
 
-export const renderLogin = () => {
+export const renderLogin = ({ comments }) => {
     const appElement = document.getElementById("app");
     const loginHTML = `
     <div class="container">
@@ -27,8 +27,10 @@ export const renderLogin = () => {
             password: passwordInputElement.value,
         }).then((responseData) => {
             setToken(responseData.user.token);
+            setAuth();
+            setUser(responseData.user.name);
         }).then(() => {
-            renderStudents({comments, listElement, textInputElement});
+            getApi({comments});
         })
     })
 }

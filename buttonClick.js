@@ -1,8 +1,18 @@
 import { renderStudents } from "./render.js";
 import { postComment } from "./api.js";
 import { getApi } from "./getapi.js";
+import { user } from "./main.js";
 
-export function buttonClick ({buttonElement, nameInputElement, textInputElement, comments, loader, listElement}) {
+export function buttonClick ({comments}) {
+  const buttonElement = document.getElementById("write-button");
+
+  const nameInputElement = document.getElementById("name-input");
+  if (user) {
+    nameInputElement.disabled = true;
+    nameInputElement.value = user;
+  }
+  const textInputElement = document.getElementById("text-input");
+
     buttonElement.addEventListener("click", () => {
     nameInputElement.classList.remove("error");
     textInputElement.classList.remove("error");
@@ -26,8 +36,8 @@ export function buttonClick ({buttonElement, nameInputElement, textInputElement,
           name: nameInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
           comm: textInputElement.value.replaceAll(">", "&gt;").replaceAll("<", "&lt;"),
         };
-        comments = comments.push(newComment);
-        getApi({comments, loader, listElement, textInputElement, buttonElement});
+        comments.push(newComment);
+        getApi({comments});
       })
       .then(() => {
         buttonElement.disabled = false;
@@ -48,6 +58,6 @@ export function buttonClick ({buttonElement, nameInputElement, textInputElement,
         console.warn(error);
       });
 
-      renderStudents({comments, listElement, textInputElement});
+      renderStudents({comments});
   });
 }

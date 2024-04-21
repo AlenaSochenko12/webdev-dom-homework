@@ -1,13 +1,16 @@
-import { renderStudents } from "./render.js";
 import { getApi } from "./getapi.js";
-import { buttonClick } from "./buttonClick.js";
-import { buttonElement, listElement, nameInputElement, textInputElement, loader, comments } from "./variables.js";
-import { renderLogin } from "./loginPage.js";
 
-  getApi({comments, loader, listElement, textInputElement, buttonElement});
+export let isAuth = false;
 
-  renderLogin();
-  //renderStudents({comments, listElement, textInputElement});
+export function setAuth () {
+  isAuth = true;
+ }
 
+ export let user = false;
 
-  buttonClick ({buttonElement, nameInputElement, textInputElement, comments, loader, listElement});
+ export function setUser (admin) {
+  user = admin;
+ }
+
+ let comments = [];
+  getApi({comments});
